@@ -113,7 +113,7 @@ async def get_sp500_constituents() -> str:
     return "\n".join(result)
 
 
-async def get_stock_news(tickers: Optional[str] = None, limit: int = 20, format: str = "csv") -> str:
+async def get_stock_news(tickers: Optional[str] = None, limit: int = 20, format: str = "markdown") -> str:
     """
     Get latest stock market news, optionally filtered by ticker(s)
 
@@ -164,7 +164,7 @@ async def get_stock_news(tickers: Optional[str] = None, limit: int = 20, format:
     return "\n".join(result)
 
 
-async def get_economic_calendar(from_date: Optional[str] = None, to_date: Optional[str] = None, format: str = "csv") -> str:
+async def get_economic_calendar(from_date: Optional[str] = None, to_date: Optional[str] = None, format: str = "markdown") -> str:
     """
     Get economic calendar events (GDP, CPI, unemployment, Fed decisions, etc.)
 
@@ -225,7 +225,7 @@ async def get_economic_calendar(from_date: Optional[str] = None, to_date: Option
     return "\n".join(result)
 
 
-async def get_ipo_calendar(from_date: Optional[str] = None, to_date: Optional[str] = None, format: str = "csv") -> str:
+async def get_ipo_calendar(from_date: Optional[str] = None, to_date: Optional[str] = None, format: str = "markdown") -> str:
     """
     Get upcoming and recent IPO (Initial Public Offering) calendar
 

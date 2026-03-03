@@ -206,7 +206,7 @@ async def get_financial_estimates(symbol: str, period: str = "annual", limit: in
     return "\n".join(result)
 
 
-async def get_price_target_news(symbol: str = None, limit: int = 10, format: str = "csv") -> str:
+async def get_price_target_news(symbol: str = None, limit: int = 10, format: str = "markdown") -> str:
     """
     Get latest analyst price target updates
 
@@ -330,7 +330,7 @@ async def get_price_target_news(symbol: str = None, limit: int = 10, format: str
     return "\n".join(result)
 
 
-async def get_price_target_latest_news(page: int = 0, limit: int = 10, format: str = "csv") -> str:
+async def get_price_target_latest_news(page: int = 0, limit: int = 10, format: str = "markdown") -> str:
     """
     Get latest price target announcements with pagination
 
