@@ -15,7 +15,12 @@ from mcp.server.fastmcp import FastMCP, Context
 
 # Import tools
 from src.tools.company import get_company_profile, get_company_notes
-from src.tools.statements import get_income_statement
+from src.tools.statements import get_income_statement, get_balance_sheet, get_cash_flow_statement
+from src.tools.metrics import get_key_metrics, get_key_metrics_ttm, get_financial_ratios, get_financial_ratios_ttm
+from src.tools.earnings import get_earnings_calendar, get_earnings_surprises
+from src.tools.ownership import get_insider_trading, get_institutional_holders, get_13f_filings
+from src.tools.company_intel import get_company_peers, get_company_outlook, get_revenue_product_segmentation, get_revenue_geographic_segmentation, get_employee_count
+from src.tools.market_data import get_enterprise_value, get_sector_performance, get_sp500_constituents, get_stock_news, get_economic_calendar, get_ipo_calendar
 from src.tools.search import search_by_symbol, search_by_name
 from src.tools.quote import get_quote, get_quote_change, get_aftermarket_quote
 from src.tools.charts import get_price_change
@@ -42,11 +47,7 @@ from src.prompts.templates import (
 )
 
 # Create the MCP server
-mcp = FastMCP(
-    "FMP Financial Data",
-    description="Financial data tools and resources powered by Financial Modeling Prep API",
-    dependencies=["httpx"]
-)
+mcp = FastMCP("FMP Financial Data")
 
 # Register tools
 mcp.tool()(get_company_profile)
@@ -56,6 +57,28 @@ mcp.tool()(get_quote_change)
 mcp.tool()(get_aftermarket_quote)
 mcp.tool()(get_price_change)
 mcp.tool()(get_income_statement)
+mcp.tool()(get_balance_sheet)
+mcp.tool()(get_cash_flow_statement)
+mcp.tool()(get_key_metrics)
+mcp.tool()(get_key_metrics_ttm)
+mcp.tool()(get_financial_ratios)
+mcp.tool()(get_financial_ratios_ttm)
+mcp.tool()(get_earnings_calendar)
+mcp.tool()(get_earnings_surprises)
+mcp.tool()(get_insider_trading)
+mcp.tool()(get_institutional_holders)
+mcp.tool()(get_13f_filings)
+mcp.tool()(get_company_peers)
+mcp.tool()(get_company_outlook)
+mcp.tool()(get_revenue_product_segmentation)
+mcp.tool()(get_revenue_geographic_segmentation)
+mcp.tool()(get_employee_count)
+mcp.tool()(get_enterprise_value)
+mcp.tool()(get_sector_performance)
+mcp.tool()(get_sp500_constituents)
+mcp.tool()(get_stock_news)
+mcp.tool()(get_economic_calendar)
+mcp.tool()(get_ipo_calendar)
 mcp.tool()(search_by_symbol)
 mcp.tool()(search_by_name)
 mcp.tool()(get_ratings_snapshot)
@@ -168,18 +191,17 @@ if __name__ == "__main__":
         from mcp.server.fastmcp import FastMCP
         
         # Create new FastMCP instance with desired configuration
-        streamable_mcp = FastMCP(
-            "FMP Financial Data",
-            description="Financial data tools and resources powered by Financial Modeling Prep API",
-            dependencies=["httpx"],
-            stateless_http=args.stateless,
-            json_response=args.json_response
-        )
+        streamable_mcp = FastMCP("FMP Financial Data")
         
         # Re-register all tools using the same decorators approach
         # Import tools
         from src.tools.company import get_company_profile, get_company_notes
-        from src.tools.statements import get_income_statement
+        from src.tools.statements import get_income_statement, get_balance_sheet, get_cash_flow_statement
+        from src.tools.metrics import get_key_metrics, get_key_metrics_ttm, get_financial_ratios, get_financial_ratios_ttm
+        from src.tools.earnings import get_earnings_calendar, get_earnings_surprises
+        from src.tools.ownership import get_insider_trading, get_institutional_holders, get_13f_filings
+        from src.tools.company_intel import get_company_peers, get_company_outlook, get_revenue_product_segmentation, get_revenue_geographic_segmentation, get_employee_count
+        from src.tools.market_data import get_enterprise_value, get_sector_performance, get_sp500_constituents, get_stock_news, get_economic_calendar, get_ipo_calendar
         from src.tools.search import search_by_symbol, search_by_name
         from src.tools.quote import get_quote, get_quote_change, get_aftermarket_quote
         from src.tools.charts import get_price_change
@@ -215,6 +237,28 @@ if __name__ == "__main__":
         streamable_mcp.tool()(get_aftermarket_quote)
         streamable_mcp.tool()(get_price_change)
         streamable_mcp.tool()(get_income_statement)
+        streamable_mcp.tool()(get_balance_sheet)
+        streamable_mcp.tool()(get_cash_flow_statement)
+        streamable_mcp.tool()(get_key_metrics)
+        streamable_mcp.tool()(get_key_metrics_ttm)
+        streamable_mcp.tool()(get_financial_ratios)
+        streamable_mcp.tool()(get_financial_ratios_ttm)
+        streamable_mcp.tool()(get_earnings_calendar)
+        streamable_mcp.tool()(get_earnings_surprises)
+        streamable_mcp.tool()(get_insider_trading)
+        streamable_mcp.tool()(get_institutional_holders)
+        streamable_mcp.tool()(get_13f_filings)
+        streamable_mcp.tool()(get_company_peers)
+        streamable_mcp.tool()(get_company_outlook)
+        streamable_mcp.tool()(get_revenue_product_segmentation)
+        streamable_mcp.tool()(get_revenue_geographic_segmentation)
+        streamable_mcp.tool()(get_employee_count)
+        streamable_mcp.tool()(get_enterprise_value)
+        streamable_mcp.tool()(get_sector_performance)
+        streamable_mcp.tool()(get_sp500_constituents)
+        streamable_mcp.tool()(get_stock_news)
+        streamable_mcp.tool()(get_economic_calendar)
+        streamable_mcp.tool()(get_ipo_calendar)
         streamable_mcp.tool()(search_by_symbol)
         streamable_mcp.tool()(search_by_name)
         streamable_mcp.tool()(get_ratings_snapshot)

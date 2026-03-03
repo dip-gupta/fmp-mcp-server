@@ -5,26 +5,29 @@ import os
 import httpx
 from typing import Dict, Any, Optional
 
-# FMP API Base URL
+# FMP API Base URLs
 FMP_BASE_URL = "https://financialmodelingprep.com/stable"
+FMP_V3_URL = "https://financialmodelingprep.com/api/v3"
+FMP_V4_URL = "https://financialmodelingprep.com/api/v4"
 
 # Default API key - try to get from environment or use placeholder
 DEFAULT_API_KEY = os.environ.get("FMP_API_KEY", "demo")
 
 
-async def fmp_api_request(endpoint: str, params: Dict = None, api_key: str = None) -> Dict:
+async def fmp_api_request(endpoint: str, params: Dict = None, api_key: str = None, base_url: str = None) -> Dict:
     """
     Make a request to the Financial Modeling Prep API
-    
+
     Args:
         endpoint: API endpoint path (without the base URL)
         params: Query parameters for the request
         api_key: API key for authentication (uses env var or default if None)
-        
+        base_url: Override base URL (use FMP_V3_URL or FMP_V4_URL for older endpoints)
+
     Returns:
         JSON response data or error information
     """
-    url = f"{FMP_BASE_URL}/{endpoint}"
+    url = f"{base_url or FMP_BASE_URL}/{endpoint}"
     
     # Add API key to params
     if params is None:

@@ -6,46 +6,44 @@ This module contains tools related to the Financial Statements section of the Fi
 from typing import Dict, Any, Optional, List, Union
 
 from src.api.client import fmp_api_request
-
-# Helper function for formatting numbers with commas
-def format_number(value: Any) -> str:
-    """Format a number with commas, or return as-is if not a number"""
-    if isinstance(value, (int, float)):
-        return f"{value:,}"
-    return str(value)
+from src.tools.utils import format_number, json_to_csv
 
 
-async def get_income_statement(symbol: str, period: str = "annual", limit: int = 1) -> str:
+async def get_income_statement(symbol: str, period: str = "annual", limit: int = 1, format: str = "markdown") -> str:
     """
     Get income statement for a company
-    
+
     Args:
         symbol: Stock ticker symbol (e.g., AAPL, MSFT, TSLA)
         period: Data period - "annual" or "quarter"
         limit: Number of periods to return (1-120)
-        
+        format: Output format - "markdown" for readable text, "csv" for raw CSV data
+
     Returns:
         Income statement data
     """
     # Validate inputs
     if period not in ["annual", "quarter"]:
         return "Error: period must be 'annual' or 'quarter'"
-    
+
     if not 1 <= limit <= 120:
         return "Error: limit must be between 1 and 120"
-    
+
     endpoint = "income-statement"
     params = {"symbol": symbol, "period": period, "limit": limit}
-    
+
     # Call API
     data = await fmp_api_request(endpoint, params)
-    
+
     if isinstance(data, dict) and "error" in data:
         return f"Error fetching income statement for {symbol}: {data.get('message', 'Unknown error')}"
-    
+
     if not data or not isinstance(data, list) or len(data) == 0:
         return f"No income statement data found for symbol {symbol}"
-    
+
+    if format == "csv":
+        return json_to_csv(data)
+
     # Format the response
     result = [f"# Income Statement for {symbol}"]
     
@@ -114,4 +112,162 @@ async def get_income_statement(symbol: str, period: str = "annual", limit: int =
         result.append(f"**Weighted Average Shares Outstanding**: {format_number(statement.get('weightedAverageShsOut', 'N/A'))}")
         result.append(f"**Weighted Average Shares Outstanding (Diluted)**: {format_number(statement.get('weightedAverageShsOutDil', 'N/A'))}")
     
+    return "\n".join(result)
+
+
+async def get_balance_sheet(symbol: str, period: str = "annual", limit: int = 1, format: str = "markdown") -> str:
+    """
+    Get balance sheet statement for a company
+
+    Args:
+        symbol: Stock ticker symbol (e.g., AAPL, MSFT, TSLA)
+        period: Data period - "annual" or "quarter"
+        limit: Number of periods to return (1-120)
+        format: Output format - "markdown" for readable text, "csv" for raw CSV data
+
+    Returns:
+        Balance sheet data
+    """
+    if period not in ["annual", "quarter"]:
+        return "Error: period must be 'annual' or 'quarter'"
+    if not 1 <= limit <= 120:
+        return "Error: limit must be between 1 and 120"
+
+    data = await fmp_api_request("balance-sheet-statement", {"symbol": symbol, "period": period, "limit": limit})
+
+    if isinstance(data, dict) and "error" in data:
+        return f"Error fetching balance sheet for {symbol}: {data.get('message', 'Unknown error')}"
+    if not data or not isinstance(data, list) or len(data) == 0:
+        return f"No balance sheet data found for symbol {symbol}"
+
+    if format == "csv":
+        return json_to_csv(data)
+
+    result = [f"# Balance Sheet for {symbol}"]
+
+    for stmt in data:
+        result.append(f"\n## Period: {stmt.get('date', 'Unknown')}")
+        result.append(f"**Report Type**: {stmt.get('period', 'Unknown').capitalize()}")
+        result.append(f"**Currency**: {stmt.get('reportedCurrency', 'USD')}")
+        result.append("")
+
+        result.append("### Assets")
+        result.append(f"**Cash and Cash Equivalents**: ${format_number(stmt.get('cashAndCashEquivalents', 'N/A'))}")
+        result.append(f"**Short-Term Investments**: ${format_number(stmt.get('shortTermInvestments', 'N/A'))}")
+        result.append(f"**Cash and Short-Term Investments**: ${format_number(stmt.get('cashAndShortTermInvestments', 'N/A'))}")
+        result.append(f"**Net Receivables**: ${format_number(stmt.get('netReceivables', 'N/A'))}")
+        result.append(f"**Inventory**: ${format_number(stmt.get('inventory', 'N/A'))}")
+        result.append(f"**Other Current Assets**: ${format_number(stmt.get('otherCurrentAssets', 'N/A'))}")
+        result.append(f"**Total Current Assets**: ${format_number(stmt.get('totalCurrentAssets', 'N/A'))}")
+        result.append(f"**Property, Plant & Equipment (Net)**: ${format_number(stmt.get('propertyPlantEquipmentNet', 'N/A'))}")
+        result.append(f"**Goodwill**: ${format_number(stmt.get('goodwill', 'N/A'))}")
+        result.append(f"**Intangible Assets**: ${format_number(stmt.get('intangibleAssets', 'N/A'))}")
+        result.append(f"**Long-Term Investments**: ${format_number(stmt.get('longTermInvestments', 'N/A'))}")
+        result.append(f"**Other Non-Current Assets**: ${format_number(stmt.get('otherNonCurrentAssets', 'N/A'))}")
+        result.append(f"**Total Non-Current Assets**: ${format_number(stmt.get('totalNonCurrentAssets', 'N/A'))}")
+        result.append(f"**Total Assets**: ${format_number(stmt.get('totalAssets', 'N/A'))}")
+        result.append("")
+
+        result.append("### Liabilities")
+        result.append(f"**Accounts Payable**: ${format_number(stmt.get('accountPayables', 'N/A'))}")
+        result.append(f"**Short-Term Debt**: ${format_number(stmt.get('shortTermDebt', 'N/A'))}")
+        result.append(f"**Deferred Revenue (Current)**: ${format_number(stmt.get('deferredRevenue', 'N/A'))}")
+        result.append(f"**Other Current Liabilities**: ${format_number(stmt.get('otherCurrentLiabilities', 'N/A'))}")
+        result.append(f"**Total Current Liabilities**: ${format_number(stmt.get('totalCurrentLiabilities', 'N/A'))}")
+        result.append(f"**Long-Term Debt**: ${format_number(stmt.get('longTermDebt', 'N/A'))}")
+        result.append(f"**Other Non-Current Liabilities**: ${format_number(stmt.get('otherNonCurrentLiabilities', 'N/A'))}")
+        result.append(f"**Total Non-Current Liabilities**: ${format_number(stmt.get('totalNonCurrentLiabilities', 'N/A'))}")
+        result.append(f"**Total Liabilities**: ${format_number(stmt.get('totalLiabilities', 'N/A'))}")
+        result.append("")
+
+        result.append("### Equity")
+        result.append(f"**Common Stock**: ${format_number(stmt.get('commonStock', 'N/A'))}")
+        result.append(f"**Retained Earnings**: ${format_number(stmt.get('retainedEarnings', 'N/A'))}")
+        result.append(f"**Other Comprehensive Income/Loss**: ${format_number(stmt.get('accumulatedOtherComprehensiveIncomeLoss', 'N/A'))}")
+        result.append(f"**Total Stockholders' Equity**: ${format_number(stmt.get('totalStockholdersEquity', 'N/A'))}")
+        result.append(f"**Total Equity**: ${format_number(stmt.get('totalEquity', 'N/A'))}")
+        result.append(f"**Total Liabilities & Equity**: ${format_number(stmt.get('totalLiabilitiesAndStockholdersEquity', 'N/A'))}")
+        result.append("")
+
+        result.append("### Key Metrics")
+        result.append(f"**Total Debt**: ${format_number(stmt.get('totalDebt', 'N/A'))}")
+        result.append(f"**Net Debt**: ${format_number(stmt.get('netDebt', 'N/A'))}")
+        result.append(f"**Total Investments**: ${format_number(stmt.get('totalInvestments', 'N/A'))}")
+
+    return "\n".join(result)
+
+
+async def get_cash_flow_statement(symbol: str, period: str = "annual", limit: int = 1, format: str = "markdown") -> str:
+    """
+    Get cash flow statement for a company
+
+    Args:
+        symbol: Stock ticker symbol (e.g., AAPL, MSFT, TSLA)
+        period: Data period - "annual" or "quarter"
+        limit: Number of periods to return (1-120)
+        format: Output format - "markdown" for readable text, "csv" for raw CSV data
+
+    Returns:
+        Cash flow statement data
+    """
+    if period not in ["annual", "quarter"]:
+        return "Error: period must be 'annual' or 'quarter'"
+    if not 1 <= limit <= 120:
+        return "Error: limit must be between 1 and 120"
+
+    data = await fmp_api_request("cash-flow-statement", {"symbol": symbol, "period": period, "limit": limit})
+
+    if isinstance(data, dict) and "error" in data:
+        return f"Error fetching cash flow statement for {symbol}: {data.get('message', 'Unknown error')}"
+    if not data or not isinstance(data, list) or len(data) == 0:
+        return f"No cash flow statement data found for symbol {symbol}"
+
+    if format == "csv":
+        return json_to_csv(data)
+
+    result = [f"# Cash Flow Statement for {symbol}"]
+
+    for stmt in data:
+        result.append(f"\n## Period: {stmt.get('date', 'Unknown')}")
+        result.append(f"**Report Type**: {stmt.get('period', 'Unknown').capitalize()}")
+        result.append(f"**Currency**: {stmt.get('reportedCurrency', 'USD')}")
+        result.append("")
+
+        result.append("### Operating Activities")
+        result.append(f"**Net Income**: ${format_number(stmt.get('netIncome', 'N/A'))}")
+        result.append(f"**Depreciation & Amortization**: ${format_number(stmt.get('depreciationAndAmortization', 'N/A'))}")
+        result.append(f"**Stock-Based Compensation**: ${format_number(stmt.get('stockBasedCompensation', 'N/A'))}")
+        result.append(f"**Change in Working Capital**: ${format_number(stmt.get('changeInWorkingCapital', 'N/A'))}")
+        result.append(f"**Accounts Receivables**: ${format_number(stmt.get('accountsReceivables', 'N/A'))}")
+        result.append(f"**Inventory**: ${format_number(stmt.get('inventory', 'N/A'))}")
+        result.append(f"**Accounts Payables**: ${format_number(stmt.get('accountsPayables', 'N/A'))}")
+        result.append(f"**Other Working Capital**: ${format_number(stmt.get('otherWorkingCapital', 'N/A'))}")
+        result.append(f"**Other Non-Cash Items**: ${format_number(stmt.get('otherNonCashItems', 'N/A'))}")
+        result.append(f"**Operating Cash Flow**: ${format_number(stmt.get('operatingCashFlow', 'N/A'))}")
+        result.append("")
+
+        result.append("### Investing Activities")
+        result.append(f"**Capital Expenditure**: ${format_number(stmt.get('capitalExpenditure', 'N/A'))}")
+        result.append(f"**Acquisitions (Net)**: ${format_number(stmt.get('acquisitionsNet', 'N/A'))}")
+        result.append(f"**Purchases of Investments**: ${format_number(stmt.get('purchasesOfInvestments', 'N/A'))}")
+        result.append(f"**Sales/Maturities of Investments**: ${format_number(stmt.get('salesMaturitiesOfInvestments', 'N/A'))}")
+        result.append(f"**Other Investing Activities**: ${format_number(stmt.get('otherInvestingActivites', 'N/A'))}")
+        result.append(f"**Investing Cash Flow**: ${format_number(stmt.get('netCashUsedForInvestingActivites', 'N/A'))}")
+        result.append("")
+
+        result.append("### Financing Activities")
+        result.append(f"**Debt Repayment**: ${format_number(stmt.get('debtRepayment', 'N/A'))}")
+        result.append(f"**Common Stock Issued**: ${format_number(stmt.get('commonStockIssued', 'N/A'))}")
+        result.append(f"**Common Stock Repurchased**: ${format_number(stmt.get('commonStockRepurchased', 'N/A'))}")
+        result.append(f"**Dividends Paid**: ${format_number(stmt.get('dividendsPaid', 'N/A'))}")
+        result.append(f"**Other Financing Activities**: ${format_number(stmt.get('otherFinancingActivites', 'N/A'))}")
+        result.append(f"**Financing Cash Flow**: ${format_number(stmt.get('netCashUsedProvidedByFinancingActivities', 'N/A'))}")
+        result.append("")
+
+        result.append("### Summary")
+        result.append(f"**Net Change in Cash**: ${format_number(stmt.get('netChangeInCash', 'N/A'))}")
+        result.append(f"**Cash at End of Period**: ${format_number(stmt.get('cashAtEndOfPeriod', 'N/A'))}")
+        result.append(f"**Cash at Beginning of Period**: ${format_number(stmt.get('cashAtBeginningOfPeriod', 'N/A'))}")
+        result.append(f"**Free Cash Flow**: ${format_number(stmt.get('freeCashFlow', 'N/A'))}")
+
     return "\n".join(result)
