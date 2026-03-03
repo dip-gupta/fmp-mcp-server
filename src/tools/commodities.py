@@ -65,7 +65,7 @@ async def get_commodities_list() -> str:
     return "\n".join(result)
 
 
-async def get_commodities_prices(symbol: str = None, format: str = "markdown") -> str:
+async def get_commodities_prices(symbol: str = None, format: str = "csv") -> str:
     """
     Get current prices for commodities
 
@@ -173,7 +173,7 @@ async def get_historical_price_eod_light(
     limit: Optional[int] = None,
     from_date: Optional[str] = None,
     to_date: Optional[str] = None,
-    format: str = "markdown"
+    format: str = "csv"
 ) -> str:
     """
     Get historical price data for a commodity from the EOD light API

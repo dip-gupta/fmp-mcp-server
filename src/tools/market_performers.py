@@ -14,7 +14,7 @@ from src.api.client import fmp_api_request
 from src.tools.utils import format_number, json_to_csv
 
 
-async def get_biggest_gainers(limit: int = 10, format: str = "markdown") -> str:
+async def get_biggest_gainers(limit: int = 10, format: str = "csv") -> str:
     """
     Get a list of stocks with the biggest percentage gains
 
@@ -70,7 +70,7 @@ async def get_biggest_gainers(limit: int = 10, format: str = "markdown") -> str:
     return "\n".join(result)
 
 
-async def get_biggest_losers(limit: int = 10, format: str = "markdown") -> str:
+async def get_biggest_losers(limit: int = 10, format: str = "csv") -> str:
     """
     Get a list of stocks with the biggest percentage losses
 
@@ -126,7 +126,7 @@ async def get_biggest_losers(limit: int = 10, format: str = "markdown") -> str:
     return "\n".join(result)
 
 
-async def get_most_active(limit: int = 10, format: str = "markdown") -> str:
+async def get_most_active(limit: int = 10, format: str = "csv") -> str:
     """
     Get a list of most actively traded stocks by volume
 

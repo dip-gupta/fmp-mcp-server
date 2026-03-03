@@ -19,7 +19,7 @@ def format_number(value: Any) -> str:
     return str(value)
 
 
-async def get_company_dividends(symbol: str, limit: int = 10, format: str = "markdown") -> str:
+async def get_company_dividends(symbol: str, limit: int = 10, format: str = "csv") -> str:
     """
     Get dividend history for a specific company
 
@@ -101,7 +101,7 @@ async def get_company_dividends(symbol: str, limit: int = 10, format: str = "mar
     return "\n".join(result)
 
 
-async def get_dividends_calendar(from_date: str = None, to_date: str = None, limit: int = 50, format: str = "markdown") -> str:
+async def get_dividends_calendar(from_date: str = None, to_date: str = None, limit: int = 50, format: str = "csv") -> str:
     """
     Get upcoming dividend events for all stocks
 

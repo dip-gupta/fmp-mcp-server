@@ -7,7 +7,7 @@ from src.api.client import fmp_api_request, FMP_V3_URL
 from src.tools.utils import format_number, json_to_csv
 
 
-async def get_earnings_calendar(from_date: Optional[str] = None, to_date: Optional[str] = None, format: str = "markdown") -> str:
+async def get_earnings_calendar(from_date: Optional[str] = None, to_date: Optional[str] = None, format: str = "csv") -> str:
     """
     Get upcoming and recent earnings announcements across all companies
 
@@ -67,7 +67,7 @@ async def get_earnings_calendar(from_date: Optional[str] = None, to_date: Option
     return "\n".join(result)
 
 
-async def get_earnings_surprises(symbol: str, format: str = "markdown") -> str:
+async def get_earnings_surprises(symbol: str, format: str = "csv") -> str:
     """
     Get historical earnings surprises (actual vs estimated EPS) for a company
 

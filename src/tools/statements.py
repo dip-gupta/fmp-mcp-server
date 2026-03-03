@@ -9,7 +9,7 @@ from src.api.client import fmp_api_request
 from src.tools.utils import format_number, json_to_csv
 
 
-async def get_income_statement(symbol: str, period: str = "annual", limit: int = 1, format: str = "markdown") -> str:
+async def get_income_statement(symbol: str, period: str = "annual", limit: int = 1, format: str = "csv") -> str:
     """
     Get income statement for a company
 
@@ -115,7 +115,7 @@ async def get_income_statement(symbol: str, period: str = "annual", limit: int =
     return "\n".join(result)
 
 
-async def get_balance_sheet(symbol: str, period: str = "annual", limit: int = 1, format: str = "markdown") -> str:
+async def get_balance_sheet(symbol: str, period: str = "annual", limit: int = 1, format: str = "csv") -> str:
     """
     Get balance sheet statement for a company
 
@@ -197,7 +197,7 @@ async def get_balance_sheet(symbol: str, period: str = "annual", limit: int = 1,
     return "\n".join(result)
 
 
-async def get_cash_flow_statement(symbol: str, period: str = "annual", limit: int = 1, format: str = "markdown") -> str:
+async def get_cash_flow_statement(symbol: str, period: str = "annual", limit: int = 1, format: str = "csv") -> str:
     """
     Get cash flow statement for a company
 

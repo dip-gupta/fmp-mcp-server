@@ -70,7 +70,7 @@ async def get_company_profile(symbol: str) -> str:
     return "\n".join(result)
 
 
-async def get_company_notes(symbol: str, format: str = "markdown") -> str:
+async def get_company_notes(symbol: str, format: str = "csv") -> str:
     """
     Get detailed information about company-issued notes
 

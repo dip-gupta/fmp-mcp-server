@@ -204,7 +204,7 @@ async def get_revenue_geographic_segmentation(symbol: str, period: str = "annual
     return "\n".join(result)
 
 
-async def get_employee_count(symbol: str, format: str = "markdown") -> str:
+async def get_employee_count(symbol: str, format: str = "csv") -> str:
     """
     Get historical employee count for a company
 

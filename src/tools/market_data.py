@@ -7,7 +7,7 @@ from src.api.client import fmp_api_request, FMP_V3_URL
 from src.tools.utils import format_number, pct_raw as _pct, json_to_csv
 
 
-async def get_enterprise_value(symbol: str, period: str = "annual", limit: int = 1, format: str = "markdown") -> str:
+async def get_enterprise_value(symbol: str, period: str = "annual", limit: int = 1, format: str = "csv") -> str:
     """
     Get enterprise value and its components for a company over time
 
@@ -113,7 +113,7 @@ async def get_sp500_constituents() -> str:
     return "\n".join(result)
 
 
-async def get_stock_news(tickers: Optional[str] = None, limit: int = 20, format: str = "markdown") -> str:
+async def get_stock_news(tickers: Optional[str] = None, limit: int = 20, format: str = "csv") -> str:
     """
     Get latest stock market news, optionally filtered by ticker(s)
 
@@ -164,7 +164,7 @@ async def get_stock_news(tickers: Optional[str] = None, limit: int = 20, format:
     return "\n".join(result)
 
 
-async def get_economic_calendar(from_date: Optional[str] = None, to_date: Optional[str] = None, format: str = "markdown") -> str:
+async def get_economic_calendar(from_date: Optional[str] = None, to_date: Optional[str] = None, format: str = "csv") -> str:
     """
     Get economic calendar events (GDP, CPI, unemployment, Fed decisions, etc.)
 
@@ -225,7 +225,7 @@ async def get_economic_calendar(from_date: Optional[str] = None, to_date: Option
     return "\n".join(result)
 
 
-async def get_ipo_calendar(from_date: Optional[str] = None, to_date: Optional[str] = None, format: str = "markdown") -> str:
+async def get_ipo_calendar(from_date: Optional[str] = None, to_date: Optional[str] = None, format: str = "csv") -> str:
     """
     Get upcoming and recent IPO (Initial Public Offering) calendar
 

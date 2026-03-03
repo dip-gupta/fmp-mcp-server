@@ -5,7 +5,7 @@ from src.api.client import fmp_api_request
 from src.tools.utils import format_number, pct as _pct, json_to_csv
 
 
-async def get_key_metrics(symbol: str, period: str = "annual", limit: int = 1, format: str = "markdown") -> str:
+async def get_key_metrics(symbol: str, period: str = "annual", limit: int = 1, format: str = "csv") -> str:
     """
     Get key financial metrics for a company (revenue per share, PE, EV/EBITDA, ROIC, etc.)
 
@@ -134,7 +134,7 @@ async def get_key_metrics_ttm(symbol: str) -> str:
     return "\n".join(result)
 
 
-async def get_financial_ratios(symbol: str, period: str = "annual", limit: int = 1, format: str = "markdown") -> str:
+async def get_financial_ratios(symbol: str, period: str = "annual", limit: int = 1, format: str = "csv") -> str:
     """
     Get financial ratios for a company (margins, returns, efficiency, leverage ratios)
 

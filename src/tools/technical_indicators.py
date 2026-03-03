@@ -17,7 +17,7 @@ async def get_ema(
     timeframe: str = "1day",
     from_date: str = None,
     to_date: str = None,
-    format: str = "markdown"
+    format: str = "csv"
 ) -> str:
     """
     Get Exponential Moving Average (EMA) values for a stock

@@ -7,7 +7,7 @@ from src.api.client import fmp_api_request, FMP_V3_URL, FMP_V4_URL
 from src.tools.utils import format_number, json_to_csv
 
 
-async def get_insider_trading(symbol: str, limit: int = 20, format: str = "markdown") -> str:
+async def get_insider_trading(symbol: str, limit: int = 20, format: str = "csv") -> str:
     """
     Get recent insider trading activity for a company (Form 4 filings)
 
@@ -57,7 +57,7 @@ async def get_insider_trading(symbol: str, limit: int = 20, format: str = "markd
     return "\n".join(result)
 
 
-async def get_institutional_holders(symbol: str, format: str = "markdown") -> str:
+async def get_institutional_holders(symbol: str, format: str = "csv") -> str:
     """
     Get institutional holders (top funds/institutions) for a company
 
@@ -97,7 +97,7 @@ async def get_institutional_holders(symbol: str, format: str = "markdown") -> st
     return "\n".join(result)
 
 
-async def get_13f_filings(cik: str, date: Optional[str] = None, format: str = "markdown") -> str:
+async def get_13f_filings(cik: str, date: Optional[str] = None, format: str = "csv") -> str:
     """
     Get 13F filing holdings for an institutional investor by CIK number
 

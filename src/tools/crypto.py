@@ -53,7 +53,7 @@ async def get_crypto_list() -> str:
     return "\n".join(result)
 
 
-async def get_crypto_quote(symbol: str = None, format: str = "markdown") -> str:
+async def get_crypto_quote(symbol: str = None, format: str = "csv") -> str:
     """
     Get current quotes for cryptocurrencies
 

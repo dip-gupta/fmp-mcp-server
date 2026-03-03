@@ -13,7 +13,7 @@ from src.api.client import fmp_api_request
 from src.tools.utils import format_number, json_to_csv
 
 
-async def get_etf_sectors(symbol: str, format: str = "markdown") -> str:
+async def get_etf_sectors(symbol: str, format: str = "csv") -> str:
     """
     Get sector weightings for an ETF
 
@@ -62,7 +62,7 @@ async def get_etf_sectors(symbol: str, format: str = "markdown") -> str:
     return "\n".join(result)
 
 
-async def get_etf_countries(symbol: str, format: str = "markdown") -> str:
+async def get_etf_countries(symbol: str, format: str = "csv") -> str:
     """
     Get country weightings for an ETF
 
@@ -111,7 +111,7 @@ async def get_etf_countries(symbol: str, format: str = "markdown") -> str:
     return "\n".join(result)
 
 
-async def get_etf_holdings(symbol: str, limit: int = 10, format: str = "markdown") -> str:
+async def get_etf_holdings(symbol: str, limit: int = 10, format: str = "csv") -> str:
     """
     Get holdings for an ETF
 
