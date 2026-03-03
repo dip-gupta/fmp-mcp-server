@@ -9,6 +9,7 @@ from typing import Dict, Any, Optional, List, Union
 from datetime import datetime, timedelta
 
 from src.api.client import fmp_api_request
+from src.tools.utils import json_to_csv
 
 
 def format_number(value: Any) -> str:
@@ -18,14 +19,15 @@ def format_number(value: Any) -> str:
     return str(value)
 
 
-async def get_company_dividends(symbol: str, limit: int = 10) -> str:
+async def get_company_dividends(symbol: str, limit: int = 10, format: str = "markdown") -> str:
     """
     Get dividend history for a specific company
-    
+
     Args:
         symbol: Stock ticker symbol (e.g., AAPL, MSFT, JNJ)
         limit: Number of dividend records to return (1-1000)
-        
+        format: Output format - "markdown" for readable text, "csv" for raw CSV data
+
     Returns:
         Historical dividend payments and upcoming dividends
     """
@@ -40,10 +42,13 @@ async def get_company_dividends(symbol: str, limit: int = 10) -> str:
     
     if not data or not isinstance(data, list) or len(data) == 0:
         return f"No dividend data found for symbol {symbol}"
-    
+
+    if format == "csv":
+        return json_to_csv(data)
+
     # Format the response
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    
+
     result = [
         f"# Dividend History for {symbol}",
         f"*Data as of {current_time}*",
@@ -96,15 +101,16 @@ async def get_company_dividends(symbol: str, limit: int = 10) -> str:
     return "\n".join(result)
 
 
-async def get_dividends_calendar(from_date: str = None, to_date: str = None, limit: int = 50) -> str:
+async def get_dividends_calendar(from_date: str = None, to_date: str = None, limit: int = 50, format: str = "markdown") -> str:
     """
     Get upcoming dividend events for all stocks
-    
+
     Args:
         from_date: Start date in YYYY-MM-DD format (defaults to today)
         to_date: End date in YYYY-MM-DD format (defaults to 30 days from today)
         limit: Number of events to return (1-3000)
-        
+        format: Output format - "markdown" for readable text, "csv" for raw CSV data
+
     Returns:
         Calendar of upcoming dividend events
     """
@@ -146,7 +152,10 @@ async def get_dividends_calendar(from_date: str = None, to_date: str = None, lim
     
     if not data or not isinstance(data, list) or len(data) == 0:
         return f"No dividend events found between {from_date} and {to_date}"
-    
+
+    if format == "csv":
+        return json_to_csv(data)
+
     # Format the response
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     

@@ -11,16 +11,17 @@ from datetime import datetime
 from typing import Dict, Any, Optional, List, Union
 
 from src.api.client import fmp_api_request
-from src.tools.statements import format_number
+from src.tools.utils import format_number, json_to_csv
 
 
-async def get_biggest_gainers(limit: int = 10) -> str:
+async def get_biggest_gainers(limit: int = 10, format: str = "markdown") -> str:
     """
     Get a list of stocks with the biggest percentage gains
-    
+
     Args:
         limit: Number of gainers to return (1-100)
-        
+        format: Output format - "markdown" for readable text, "csv" for raw CSV data
+
     Returns:
         List of stocks with the highest percentage gains
     """
@@ -35,7 +36,10 @@ async def get_biggest_gainers(limit: int = 10) -> str:
     
     if not data or not isinstance(data, list) or len(data) == 0:
         return "No data found for biggest gainers"
-    
+
+    if format == "csv":
+        return json_to_csv(data[:limit])
+
     # Limit the number of results
     data = data[:limit]
     
@@ -66,13 +70,14 @@ async def get_biggest_gainers(limit: int = 10) -> str:
     return "\n".join(result)
 
 
-async def get_biggest_losers(limit: int = 10) -> str:
+async def get_biggest_losers(limit: int = 10, format: str = "markdown") -> str:
     """
     Get a list of stocks with the biggest percentage losses
-    
+
     Args:
         limit: Number of losers to return (1-100)
-        
+        format: Output format - "markdown" for readable text, "csv" for raw CSV data
+
     Returns:
         List of stocks with the highest percentage drops
     """
@@ -87,7 +92,10 @@ async def get_biggest_losers(limit: int = 10) -> str:
     
     if not data or not isinstance(data, list) or len(data) == 0:
         return "No data found for biggest losers"
-    
+
+    if format == "csv":
+        return json_to_csv(data[:limit])
+
     # Limit the number of results
     data = data[:limit]
     
@@ -118,13 +126,14 @@ async def get_biggest_losers(limit: int = 10) -> str:
     return "\n".join(result)
 
 
-async def get_most_active(limit: int = 10) -> str:
+async def get_most_active(limit: int = 10, format: str = "markdown") -> str:
     """
     Get a list of most actively traded stocks by volume
-    
+
     Args:
         limit: Number of stocks to return (1-100)
-        
+        format: Output format - "markdown" for readable text, "csv" for raw CSV data
+
     Returns:
         List of most actively traded stocks
     """
@@ -139,7 +148,10 @@ async def get_most_active(limit: int = 10) -> str:
     
     if not data or not isinstance(data, list) or len(data) == 0:
         return "No data found for most active stocks"
-    
+
+    if format == "csv":
+        return json_to_csv(data[:limit])
+
     # Limit the number of results
     data = data[:limit]
     

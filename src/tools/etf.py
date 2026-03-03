@@ -10,16 +10,17 @@ from datetime import datetime
 from typing import Dict, Any, Optional, List, Union
 
 from src.api.client import fmp_api_request
-from src.tools.statements import format_number
+from src.tools.utils import format_number, json_to_csv
 
 
-async def get_etf_sectors(symbol: str) -> str:
+async def get_etf_sectors(symbol: str, format: str = "markdown") -> str:
     """
     Get sector weightings for an ETF
-    
+
     Args:
         symbol: ETF symbol (e.g., SPY, QQQ, VTI)
-        
+        format: Output format - "markdown" for readable text, "csv" for raw CSV data
+
     Returns:
         Sector weightings for the specified ETF
     """
@@ -30,7 +31,10 @@ async def get_etf_sectors(symbol: str) -> str:
     
     if not data or not isinstance(data, list) or len(data) == 0:
         return f"No sector weightings data found for ETF {symbol}"
-    
+
+    if format == "csv":
+        return json_to_csv(data)
+
     # Format the response
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
@@ -58,13 +62,14 @@ async def get_etf_sectors(symbol: str) -> str:
     return "\n".join(result)
 
 
-async def get_etf_countries(symbol: str) -> str:
+async def get_etf_countries(symbol: str, format: str = "markdown") -> str:
     """
     Get country weightings for an ETF
-    
+
     Args:
         symbol: ETF symbol (e.g., SPY, QQQ, VTI)
-        
+        format: Output format - "markdown" for readable text, "csv" for raw CSV data
+
     Returns:
         Country weightings for the specified ETF
     """
@@ -75,7 +80,10 @@ async def get_etf_countries(symbol: str) -> str:
     
     if not data or not isinstance(data, list) or len(data) == 0:
         return f"No country weightings data found for ETF {symbol}"
-    
+
+    if format == "csv":
+        return json_to_csv(data)
+
     # Format the response
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
@@ -103,14 +111,15 @@ async def get_etf_countries(symbol: str) -> str:
     return "\n".join(result)
 
 
-async def get_etf_holdings(symbol: str, limit: int = 10) -> str:
+async def get_etf_holdings(symbol: str, limit: int = 10, format: str = "markdown") -> str:
     """
     Get holdings for an ETF
-    
+
     Args:
         symbol: ETF symbol (e.g., SPY, QQQ, VTI)
         limit: Number of holdings to return (1-100)
-        
+        format: Output format - "markdown" for readable text, "csv" for raw CSV data
+
     Returns:
         Top holdings for the specified ETF
     """
@@ -125,7 +134,10 @@ async def get_etf_holdings(symbol: str, limit: int = 10) -> str:
     
     if not data or not isinstance(data, list) or len(data) == 0:
         return f"No holdings data found for ETF {symbol}"
-    
+
+    if format == "csv":
+        return json_to_csv(data[:limit])
+
     # Limit the number of results
     data = data[:limit]
     

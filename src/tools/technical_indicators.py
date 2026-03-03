@@ -8,7 +8,7 @@ from datetime import datetime
 from typing import Dict, Any, Optional, List, Union
 
 from src.api.client import fmp_api_request
-from src.tools.statements import format_number
+from src.tools.utils import format_number, json_to_csv
 
 
 async def get_ema(
@@ -16,18 +16,20 @@ async def get_ema(
     period_length: int = 10,
     timeframe: str = "1day",
     from_date: str = None,
-    to_date: str = None
+    to_date: str = None,
+    format: str = "markdown"
 ) -> str:
     """
     Get Exponential Moving Average (EMA) values for a stock
-    
+
     Args:
         symbol: Stock symbol (e.g., AAPL, MSFT)
         period_length: Period length for the EMA calculation (default: 10)
         timeframe: Time frame for data (options: 1min, 5min, 15min, 30min, 1hour, 4hour, 1day)
         from_date: Start date for data in format YYYY-MM-DD (optional)
         to_date: End date for data in format YYYY-MM-DD (optional)
-        
+        format: Output format - "markdown" for readable text, "csv" for raw CSV data
+
     Returns:
         EMA values for the specified stock with price data
     """
@@ -63,7 +65,10 @@ async def get_ema(
     # Handle empty response
     if not data or not isinstance(data, list) or len(data) == 0:
         return f"No EMA data found for symbol {symbol}"
-    
+
+    if format == "csv":
+        return json_to_csv(data)
+
     # Format the response
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     

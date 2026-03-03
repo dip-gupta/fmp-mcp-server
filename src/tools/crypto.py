@@ -9,7 +9,7 @@ from datetime import datetime
 from typing import Dict, Any, Optional, List, Union
 
 from src.api.client import fmp_api_request
-from src.tools.statements import format_number
+from src.tools.utils import format_number, json_to_csv
 
 
 async def get_crypto_list() -> str:
@@ -53,14 +53,15 @@ async def get_crypto_list() -> str:
     return "\n".join(result)
 
 
-async def get_crypto_quote(symbol: str = None) -> str:
+async def get_crypto_quote(symbol: str = None, format: str = "markdown") -> str:
     """
     Get current quotes for cryptocurrencies
-    
+
     Args:
         symbols: Comma-separated list of cryptocurrency symbols (e.g., "BTCUSD,ETHUSD")
                 If not provided, returns top cryptocurrencies by market cap
-    
+        format: Output format - "markdown" for readable text, "csv" for raw CSV data
+
     Returns:
         Current quotes for the specified cryptocurrencies
     """
@@ -72,7 +73,10 @@ async def get_crypto_quote(symbol: str = None) -> str:
     
     if not data or not isinstance(data, list) or len(data) == 0:
         return f"No quote data found for cryptocurrencies: {symbol if symbol else 'top cryptocurrencies'}"
-    
+
+    if format == "csv":
+        return json_to_csv(data)
+
     # Format the response
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     

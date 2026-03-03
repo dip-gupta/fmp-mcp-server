@@ -9,6 +9,7 @@ from datetime import datetime
 from typing import Dict, Any, Optional, List, Union
 
 from src.api.client import fmp_api_request
+from src.tools.utils import json_to_csv
 
 # Helper function for formatting numbers with commas
 def format_number(value: Any) -> str:
@@ -69,13 +70,14 @@ async def get_company_profile(symbol: str) -> str:
     return "\n".join(result)
 
 
-async def get_company_notes(symbol: str) -> str:
+async def get_company_notes(symbol: str, format: str = "markdown") -> str:
     """
     Get detailed information about company-issued notes
-    
+
     Args:
         symbol: Stock ticker symbol (e.g., AAPL, MSFT, TSLA)
-        
+        format: Output format - "markdown" for readable text, "csv" for raw CSV data
+
     Returns:
         Information about company notes and debt instruments
     """
@@ -86,7 +88,10 @@ async def get_company_notes(symbol: str) -> str:
     
     if not data or not isinstance(data, list) or len(data) == 0:
         return f"No company notes data found for symbol {symbol}"
-    
+
+    if format == "csv":
+        return json_to_csv(data)
+
     # Format the response
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     

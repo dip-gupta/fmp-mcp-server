@@ -10,7 +10,7 @@ from datetime import datetime
 from typing import Dict, Any, Optional, List, Union
 
 from src.api.client import fmp_api_request
-from src.tools.statements import format_number
+from src.tools.utils import format_number, json_to_csv
 
 
 async def get_commodities_list() -> str:
@@ -65,14 +65,15 @@ async def get_commodities_list() -> str:
     return "\n".join(result)
 
 
-async def get_commodities_prices(symbol: str = None) -> str:
+async def get_commodities_prices(symbol: str = None, format: str = "markdown") -> str:
     """
     Get current prices for commodities
-    
+
     Args:
         symbols: Comma-separated list of commodity symbols (e.g., "OUSX,GCUSD")
                 If not provided, returns all available commodities
-    
+        format: Output format - "markdown" for readable text, "csv" for raw CSV data
+
     Returns:
         Current prices for the specified commodities
     """
@@ -84,7 +85,10 @@ async def get_commodities_prices(symbol: str = None) -> str:
     
     if not data or not isinstance(data, list) or len(data) == 0:
         return f"No price data found for commodities: {symbol if symbol else 'all'}"
-    
+
+    if format == "csv":
+        return json_to_csv(data)
+
     # Format the response
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
@@ -168,17 +172,19 @@ async def get_historical_price_eod_light(
     symbol: str,
     limit: Optional[int] = None,
     from_date: Optional[str] = None,
-    to_date: Optional[str] = None
+    to_date: Optional[str] = None,
+    format: str = "markdown"
 ) -> str:
     """
     Get historical price data for a commodity from the EOD light API
-    
+
     Args:
         symbol: The commodity symbol (e.g., "GCUSD" for Gold)
         limit: Optional number of results to return
         from_date: Optional start date in format "YYYY-MM-DD"
         to_date: Optional end date in format "YYYY-MM-DD"
-    
+        format: Output format - "markdown" for readable text, "csv" for raw CSV data
+
     Returns:
         Historical price data formatted as markdown
     """
@@ -205,7 +211,10 @@ async def get_historical_price_eod_light(
     # Check for empty response
     if not data or not isinstance(data, list) or len(data) == 0:
         return f"No historical price data found for {symbol}"
-    
+
+    if format == "csv":
+        return json_to_csv(data)
+
     # Format the response
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     

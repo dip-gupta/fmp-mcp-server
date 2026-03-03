@@ -11,7 +11,7 @@ from typing import Dict, Any, Optional, List
 from datetime import datetime
 
 from src.api.client import fmp_api_request
-from src.tools.statements import format_number
+from src.tools.utils import format_number, json_to_csv
 
 
 async def get_ratings_snapshot(symbol: str) -> str:
@@ -74,16 +74,17 @@ async def get_ratings_snapshot(symbol: str) -> str:
     return "\n".join(result)
 
 
-async def get_financial_estimates(symbol: str, period: str = "annual", limit: int = 10, page: int = 0) -> str:
+async def get_financial_estimates(symbol: str, period: str = "annual", limit: int = 10, page: int = 0, format: str = "markdown") -> str:
     """
     Get analyst financial estimates for a company
-    
+
     Args:
         symbol: Stock ticker symbol (e.g., AAPL, MSFT, TSLA)
         period: Period of estimates - "annual" or "quarter"
         limit: Number of estimates to return (1-1000)
         page: Page number for pagination (0-based)
-        
+        format: Output format - "markdown" for readable text, "csv" for raw CSV data
+
     Returns:
         Analyst estimates for revenue, EPS, and other metrics
     """
@@ -104,7 +105,10 @@ async def get_financial_estimates(symbol: str, period: str = "annual", limit: in
     
     if not data or not isinstance(data, list) or len(data) == 0:
         return f"No financial estimates found for symbol {symbol}"
-    
+
+    if format == "csv":
+        return json_to_csv(data)
+
     # Format the response
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
@@ -202,14 +206,15 @@ async def get_financial_estimates(symbol: str, period: str = "annual", limit: in
     return "\n".join(result)
 
 
-async def get_price_target_news(symbol: str = None, limit: int = 10) -> str:
+async def get_price_target_news(symbol: str = None, limit: int = 10, format: str = "markdown") -> str:
     """
     Get latest analyst price target updates
-    
+
     Args:
         symbol: Optional stock ticker symbol to filter by (e.g., AAPL, MSFT)
         limit: Number of updates to return (1-1000)
-        
+        format: Output format - "markdown" for readable text, "csv" for raw CSV data
+
     Returns:
         Latest price target updates from analysts
     """
@@ -230,10 +235,13 @@ async def get_price_target_news(symbol: str = None, limit: int = 10) -> str:
     
     if not data or not isinstance(data, list) or len(data) == 0:
         return "No price target updates found"
-    
+
+    if format == "csv":
+        return json_to_csv(data)
+
     # Format the response
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    
+
     result = [
         f"# Latest Price Target Updates",
         f"*Data as of {current_time}*",
@@ -322,14 +330,15 @@ async def get_price_target_news(symbol: str = None, limit: int = 10) -> str:
     return "\n".join(result)
 
 
-async def get_price_target_latest_news(page: int = 0, limit: int = 10) -> str:
+async def get_price_target_latest_news(page: int = 0, limit: int = 10, format: str = "markdown") -> str:
     """
     Get latest price target announcements with pagination
-    
+
     Args:
         page: Page number (starts at 0)
         limit: Number of results to return (1-1000)
-        
+        format: Output format - "markdown" for readable text, "csv" for raw CSV data
+
     Returns:
         Latest price target announcements from analysts
     """
@@ -350,7 +359,10 @@ async def get_price_target_latest_news(page: int = 0, limit: int = 10) -> str:
     
     if not data or not isinstance(data, list) or len(data) == 0:
         return "No price target announcements found"
-    
+
+    if format == "csv":
+        return json_to_csv(data)
+
     # Format the response
     current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
     
